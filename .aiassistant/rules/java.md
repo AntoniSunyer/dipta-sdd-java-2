@@ -1,4 +1,4 @@
 ---
-apply: off
+apply: by file patterns
 ---
 

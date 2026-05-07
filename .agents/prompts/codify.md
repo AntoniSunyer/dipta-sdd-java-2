@@ -1,3 +1,7 @@
+---
+name: codify
+description: Write code to implement a feature
+---
 # Write code to implement a feature
 
 ## Role
