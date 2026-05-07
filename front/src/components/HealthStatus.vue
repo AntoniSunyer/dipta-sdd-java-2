@@ -9,34 +9,31 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
 import { getHealthStatus } from '../services/healthService';
 
-export default {
-  name: 'HealthStatus',
-  data() {
-    return {
-      health: {
-        status: 'UNKNOWN',
-        uptime: 'N/A'
-      },
-      loading: true
-    };
-  },
-  async created() {
-    this.health = await getHealthStatus();
-    this.loading = false;
-  },
-  computed: {
-    statusClass() {
-      return {
-        'status-up': this.health.status === 'UP',
-        'status-down': this.health.status === 'DOWN',
-        'status-unknown': this.health.status === 'UNKNOWN'
-      };
-    }
+const health = ref({
+  status: 'UNKNOWN',
+  uptime: 'N/A'
+});
+const loading = ref(true);
+
+const statusClass = computed(() => ({
+  'status-up': health.value.status === 'UP',
+  'status-down': health.value.status === 'DOWN',
+  'status-unknown': health.value.status === 'UNKNOWN'
+}));
+
+onMounted(async () => {
+  try {
+    health.value = await getHealthStatus();
+  } catch (e) {
+    health.value = { status: 'DOWN', uptime: 'N/A' };
+  } finally {
+    loading.value = false;
   }
-};
+});
 </script>
 
 <style scoped>

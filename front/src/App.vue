@@ -2,22 +2,11 @@
   <img alt="Vue logo" src="./assets/logo.png">
   <HealthStatus />
   <RocketFleet />
-  <HelloWorld msg="AstroBookings - Rockets Fleet Management"/>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script setup>
 import HealthStatus from './components/HealthStatus.vue'
 import RocketFleet from './components/RocketFleet.vue'
-
-export default {
-  name: 'App',
-  components: {
-    HelloWorld,
-    HealthStatus,
-    RocketFleet
-  }
-}
 </script>
 
 <style>

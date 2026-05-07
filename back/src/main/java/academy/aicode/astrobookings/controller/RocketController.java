@@ -2,6 +2,7 @@ package academy.aicode.astrobookings.controller;
 
 import academy.aicode.astrobookings.model.Rocket;
 import academy.aicode.astrobookings.service.RocketService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,33 +33,19 @@ public class RocketController {
     }
 
     @PostMapping
-    public ResponseEntity<Rocket> createRocket(@RequestBody Rocket rocket) {
-        try {
-            return new ResponseEntity<>(service.createRocket(rocket), HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    @ResponseStatus(HttpStatus.CREATED)
+    public Rocket createRocket(@Valid @RequestBody Rocket rocket) {
+        return service.createRocket(rocket);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Rocket> updateRocket(@PathVariable UUID id, @RequestBody Rocket rocket) {
-        try {
-            return ResponseEntity.ok(service.updateRocket(id, rocket));
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("not found")) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.badRequest().build();
-        }
+    public Rocket updateRocket(@PathVariable UUID id, @Valid @RequestBody Rocket rocket) {
+        return service.updateRocket(id, rocket);
     }
 
     @PatchMapping("/{id}/decommission")
-    public ResponseEntity<Void> decommissionRocket(@PathVariable UUID id) {
-        try {
-            service.decommissionRocket(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void decommissionRocket(@PathVariable UUID id) {
+        service.decommissionRocket(id);
     }
 }

@@ -55,74 +55,70 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue';
 import { getAllRockets, createRocket, updateRocket, decommissionRocket } from '../services/rocketService';
 
-export default {
-  name: 'RocketFleet',
-  data() {
-    return {
-      rockets: [],
-      form: {
-        name: '',
-        capacity: 1,
-        range: 'Earth'
-      },
-      editingId: null,
-      error: null
-    };
-  },
-  async created() {
-    await this.fetchRockets();
-  },
-  methods: {
-    async fetchRockets() {
-      try {
-        this.rockets = await getAllRockets();
-      } catch (e) {
-        this.error = 'Failed to load rockets';
-      }
-    },
-    async handleSubmit() {
-      try {
-        if (this.editingId) {
-          await updateRocket(this.editingId, this.form);
-        } else {
-          await createRocket(this.form);
-        }
-        await this.fetchRockets();
-        this.resetForm();
-      } catch (e) {
-        this.error = 'Failed to save rocket';
-      }
-    },
-    async handleDecommission(id) {
-      try {
-        await decommissionRocket(id);
-        await this.fetchRockets();
-      } catch (e) {
-        this.error = 'Failed to decommission rocket';
-      }
-    },
-    editRocket(rocket) {
-      this.editingId = rocket.id;
-      this.form = {
-        name: rocket.name,
-        capacity: rocket.capacity,
-        range: rocket.range
-      };
-    },
-    resetForm() {
-      this.editingId = null;
-      this.form = {
-        name: '',
-        capacity: 1,
-        range: 'Earth'
-      };
-      this.error = null;
-    }
+const rockets = ref([]);
+const form = ref({
+  name: '',
+  capacity: 1,
+  range: 'Earth'
+});
+const editingId = ref(null);
+const error = ref(null);
+
+const fetchRockets = async () => {
+  try {
+    rockets.value = await getAllRockets();
+  } catch (e) {
+    error.value = 'Failed to load rockets';
   }
 };
+
+const resetForm = () => {
+  editingId.value = null;
+  form.value = {
+    name: '',
+    capacity: 1,
+    range: 'Earth'
+  };
+  error.value = null;
+};
+
+const handleSubmit = async () => {
+  try {
+    if (editingId.value) {
+      await updateRocket(editingId.value, form.value);
+    } else {
+      await createRocket(form.value);
+    }
+    await fetchRockets();
+    resetForm();
+  } catch (e) {
+    error.value = 'Failed to save rocket';
+  }
+};
+
+const handleDecommission = async (id) => {
+  try {
+    await decommissionRocket(id);
+    await fetchRockets();
+  } catch (e) {
+    error.value = 'Failed to decommission rocket';
+  }
+};
+
+const editRocket = (rocket) => {
+  editingId.value = rocket.id;
+  form.value = {
+    name: rocket.name,
+    capacity: rocket.capacity,
+    range: rocket.range
+  };
+};
+
+onMounted(fetchRockets);
 </script>
 
 <style scoped>

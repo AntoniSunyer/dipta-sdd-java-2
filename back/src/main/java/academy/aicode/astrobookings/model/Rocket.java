@@ -1,11 +1,19 @@
 package academy.aicode.astrobookings.model;
 
+import jakarta.validation.constraints.*;
 import java.util.UUID;
 
 public class Rocket {
     private UUID id;
+
+    @NotBlank(message = "Name is required")
     private String name;
+
+    @Min(value = 1, message = "Capacity must be at least 1")
+    @Max(value = 9, message = "Capacity must be at most 9")
     private int capacity;
+
+    @NotNull(message = "Range is required")
     private RocketRange range;
     private Boolean decommissioned;
 
