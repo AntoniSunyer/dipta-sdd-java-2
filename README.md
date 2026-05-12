@@ -17,7 +17,7 @@ It is an MVP, so it does not require authentication or storage features.
 
 ---
 
-- **Repository**: https://github.com/AlbertoBasaloAcademy/dipta-sdd-java
+- **Repository**: https://github.com/AlbertoBasaloAcademy/dipta-sdd-java-2
 
 - **Author**: [Alberto Basalo](https://albertobasalo.dev)
 - **Ai Code Academy**: [AI code Academy](https://aicode.academy)
