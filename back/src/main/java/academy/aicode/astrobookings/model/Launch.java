@@ -3,7 +3,7 @@ package academy.aicode.astrobookings.model;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class Launch {
@@ -13,7 +13,7 @@ public class Launch {
     private UUID rocketId;
 
     @NotNull(message = "Launch date is required")
-    private LocalDateTime launchDate;
+    private LocalDate launchDate;
 
     @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be at least 0")
@@ -27,7 +27,7 @@ public class Launch {
 
     public Launch() {}
 
-    public Launch(UUID id, UUID rocketId, LocalDateTime launchDate, BigDecimal price, Integer minOccupancy, LaunchStatus status) {
+    public Launch(UUID id, UUID rocketId, LocalDate launchDate, BigDecimal price, Integer minOccupancy, LaunchStatus status) {
         this.id = id;
         this.rocketId = rocketId;
         this.launchDate = launchDate;
@@ -52,11 +52,11 @@ public class Launch {
         this.rocketId = rocketId;
     }
 
-    public LocalDateTime getLaunchDate() {
+    public LocalDate getLaunchDate() {
         return launchDate;
     }
 
-    public void setLaunchDate(LocalDateTime launchDate) {
+    public void setLaunchDate(LocalDate launchDate) {
         this.launchDate = launchDate;
     }
 

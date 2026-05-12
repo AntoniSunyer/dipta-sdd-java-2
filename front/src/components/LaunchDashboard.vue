@@ -7,7 +7,7 @@
       <thead>
         <tr>
           <th>Rocket ID</th>
-          <th>Date</th>
+          <th>Launch Date</th>
           <th>Price</th>
           <th>Min Occupancy</th>
           <th>Status</th>
@@ -17,7 +17,7 @@
       <tbody>
         <tr v-for="launch in launches" :key="launch.id">
           <td>{{ launch.rocketId }}</td>
-          <td>{{ launch.date }}</td>
+          <td>{{ launch.launchDate }}</td>
           <td>{{ launch.price }}</td>
           <td>{{ launch.minOccupancy }}</td>
           <td>{{ launch.status }}</td>

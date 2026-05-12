@@ -12,8 +12,8 @@
         </select>
       </div>
       <div>
-        <label>Date:</label>
-        <input v-model="form.date" type="date" required />
+        <label>Launch Date:</label>
+        <input v-model="form.launchDate" type="date" required />
       </div>
       <div>
         <label>Price:</label>
@@ -39,7 +39,7 @@ const emit = defineEmits(['launch-created']);
 const rockets = ref([]);
 const form = ref({
   rocketId: '',
-  date: '',
+  launchDate: '',
   price: 0,
   minOccupancy: 1
 });
@@ -72,7 +72,7 @@ const handleSubmit = async () => {
 const resetForm = () => {
   form.value = {
     rocketId: rockets.value.length > 0 ? rockets.value[0].id : '',
-    date: '',
+    launchDate: '',
     price: 0,
     minOccupancy: 1
   };

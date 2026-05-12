@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +35,7 @@ class LaunchServiceTest {
 
     @Test
     void shouldCreateLaunch() {
-        Launch launch = new Launch(null, testRocket.getId(), LocalDateTime.now(), new BigDecimal("1000"), 2, null);
+        Launch launch = new Launch(null, testRocket.getId(), LocalDate.now(), new BigDecimal("1000"), 2, null);
         Launch created = service.createLaunch(launch);
 
         assertNotNull(created.getId());
@@ -45,13 +45,13 @@ class LaunchServiceTest {
 
     @Test
     void shouldThrowExceptionWhenRocketDoesNotExist() {
-        Launch launch = new Launch(null, UUID.randomUUID(), LocalDateTime.now(), new BigDecimal("1000"), 2, null);
+        Launch launch = new Launch(null, UUID.randomUUID(), LocalDate.now(), new BigDecimal("1000"), 2, null);
         assertThrows(IllegalArgumentException.class, () -> service.createLaunch(launch));
     }
 
     @Test
     void shouldUpdateStatus() {
-        Launch launch = new Launch(null, testRocket.getId(), LocalDateTime.now(), new BigDecimal("1000"), 2, null);
+        Launch launch = new Launch(null, testRocket.getId(), LocalDate.now(), new BigDecimal("1000"), 2, null);
         Launch created = service.createLaunch(launch);
 
         service.updateLaunchStatus(created.getId(), LaunchStatus.Confirmed);

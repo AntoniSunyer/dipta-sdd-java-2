@@ -4,6 +4,8 @@ tier: {backend, frontend, database, fullstack}
 ---
 ## {plan-type} - {spec-slug|bug-fix-slug} - {tier}
 
+{Inlude data model from spec if applicable} 
+
 ### Step 1: {Step Title}
 {short description of the step}
 - Paths:
