@@ -17,7 +17,7 @@
 - **OS dev**: `Windows` | `Linux` | `MacOS`
 - **Terminal**: ` cmd` | `PowerShell` | `bash` | `zsh`
 - **Git remote**: {Remote URL for the git repository, e.g., `https://github.com/user/repo.git`}
-- **Default branch**: `main` | `master`
+- **Default branch**: `main` | `master` 
 
 ### Folder structure
 ````text
@@ -47,10 +47,10 @@
 {Product_Name} is a {brief description of the product}.
 
 - {Key features of the product.}
-
+  
 ## Technology
 
-### {Source_folders} Tier
+### {Source_folders} Stack
 
 - **Tier**: {e.g., Frontend, Backend, Database}
 - **Language**: {language and version}
@@ -77,17 +77,17 @@
 ````
 
 - **Agent Skills**:
-  - {Skill_Name}: {Brief description of the skill and its purpose.}
+  - {Skill_Name}: {Brief description of the skill and its purpose.} 
 
 ## Principles
 
 1. Think Before Coding
-   Don't assume. Don't hide confusion. Surface tradeoffs.
+Don't assume. Don't hide confusion. Surface tradeoffs.
 2. Simplicity First
-   Minimum code that solves the problem. Nothing speculative.
+Minimum code that solves the problem. Nothing speculative.
 3. Surgical Changes
-   Touch only what you must. Clean up only your own mess.
+Touch only what you must. Clean up only your own mess.
 4. Goal-Driven Execution
-   Define success criteria. Loop until verified.
+Keep working until all success criteria are met. Loop until verified.
 
 > last updated: {Date of last update, e.g., June 2027}

@@ -29,4 +29,4 @@ spec-slug: short-slug-for-specification
 
 ## Acceptance and Release
 
-- [ ] EARS format requirement.
+- [ ] EARS format requirement.º
