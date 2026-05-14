@@ -25,8 +25,9 @@ public class RocketService {
         return repository.findAll();
     }
 
-    public Optional<Rocket> getRocketById(UUID id) {
-        return repository.findById(id);
+    public Rocket getRocketById(UUID id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Rocket not found with id: " + id));
     }
 
     public Rocket createRocket(Rocket rocket) {
@@ -38,8 +39,7 @@ public class RocketService {
     }
 
     public Rocket updateRocket(UUID id, Rocket rocketDetails) {
-        Rocket rocket = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Rocket not found with id: " + id));
+        Rocket rocket = getRocketById(id);
 
         if (Boolean.TRUE.equals(rocket.isDecommissioned())) {
             throw new IllegalStateException("Cannot update a decommissioned rocket");
@@ -55,8 +55,7 @@ public class RocketService {
     }
 
     public void decommissionRocket(UUID id) {
-        Rocket rocket = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Rocket not found with id: " + id));
+        Rocket rocket = getRocketById(id);
         rocket.setDecommissioned(true);
         repository.save(rocket);
         LOGGER.info("Rocket decommissioned: {}", id);

@@ -52,7 +52,7 @@ description : Generate a set of implementation plans for a given specification, 
 
 ### 3.2 Spec, plan and codify Booking feature
 
-> `
+> `specify the booking feature to allow users to book a passenger ticket for a rocket launch, including details like name, email and phone number, and booking status (created,  cancelled).`
 
 > `planify the booking.spec.md file to create implementation plans for the backend, frontend tiers.`
 

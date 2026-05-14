@@ -24,8 +24,7 @@ public class LaunchService {
     }
 
     public Launch createLaunch(Launch launch) {
-        rocketService.getRocketById(launch.getRocketId())
-                .orElseThrow(() -> new IllegalArgumentException("Rocket not found with id: " + launch.getRocketId()));
+        rocketService.getRocketById(launch.getRocketId());
 
         launch.setId(null);
         launch.setStatus(LaunchStatus.CREATED);

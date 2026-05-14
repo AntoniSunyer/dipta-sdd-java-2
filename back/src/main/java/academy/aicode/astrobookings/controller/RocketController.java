@@ -20,31 +20,28 @@ public class RocketController {
     }
 
     @GetMapping
-    public List<Rocket> getAllRockets() {
-        return service.getAllRockets();
+    public ResponseEntity<List<Rocket>> getAllRockets() {
+        return ResponseEntity.ok(service.getAllRockets());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Rocket> getRocketById(@PathVariable UUID id) {
-        return service.getRocketById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(service.getRocketById(id));
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Rocket createRocket(@Valid @RequestBody Rocket rocket) {
-        return service.createRocket(rocket);
+    public ResponseEntity<Rocket> createRocket(@Valid @RequestBody Rocket rocket) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createRocket(rocket));
     }
 
     @PutMapping("/{id}")
-    public Rocket updateRocket(@PathVariable UUID id, @Valid @RequestBody Rocket rocket) {
-        return service.updateRocket(id, rocket);
+    public ResponseEntity<Rocket> updateRocket(@PathVariable UUID id, @Valid @RequestBody Rocket rocket) {
+        return ResponseEntity.ok(service.updateRocket(id, rocket));
     }
 
     @PatchMapping("/{id}/decommission")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void decommissionRocket(@PathVariable UUID id) {
+    public ResponseEntity<Void> decommissionRocket(@PathVariable UUID id) {
         service.decommissionRocket(id);
+        return ResponseEntity.noContent().build();
     }
 }

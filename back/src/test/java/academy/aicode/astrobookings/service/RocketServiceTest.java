@@ -63,7 +63,7 @@ class RocketServiceTest {
         Rocket created = service.createRocket(rocket);
 
         service.decommissionRocket(created.getId());
-        Rocket updated = service.getRocketById(created.getId()).get();
+        Rocket updated = service.getRocketById(created.getId());
 
         assertTrue(updated.isDecommissioned());
     }

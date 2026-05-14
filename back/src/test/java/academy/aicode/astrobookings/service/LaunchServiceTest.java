@@ -1,5 +1,6 @@
 package academy.aicode.astrobookings.service;
 
+import academy.aicode.astrobookings.exception.ResourceNotFoundException;
 import academy.aicode.astrobookings.model.Launch;
 import academy.aicode.astrobookings.model.LaunchStatus;
 import academy.aicode.astrobookings.model.Rocket;
@@ -46,7 +47,7 @@ class LaunchServiceTest {
     @Test
     void shouldThrowExceptionWhenRocketDoesNotExist() {
         Launch launch = new Launch(null, UUID.randomUUID(), LocalDate.now(), new BigDecimal("1000"), 2, null);
-        assertThrows(IllegalArgumentException.class, () -> service.createLaunch(launch));
+        assertThrows(ResourceNotFoundException.class, () -> service.createLaunch(launch));
     }
 
     @Test
