@@ -4,54 +4,18 @@
     
     <div v-if="error" class="error">{{ error }}</div>
 
-    <form @submit.prevent="handleSubmit">
-      <h3>{{ editingId ? 'Update' : 'Register' }} Rocket</h3>
-      <div>
-        <label>Name:</label>
-        <input v-model="form.name" required />
-      </div>
-      <div>
-        <label>Capacity (1-9):</label>
-        <input v-model.number="form.capacity" type="number" min="1" max="9" required />
-      </div>
-      <div>
-        <label>Range:</label>
-        <select v-model="form.range" required>
-          <option value="Earth">Earth</option>
-          <option value="Moon">Moon</option>
-          <option value="Mars">Mars</option>
-        </select>
-      </div>
-      <button type="submit">{{ editingId ? 'Update' : 'Register' }}</button>
-      <button v-if="editingId" type="button" @click="resetForm">Cancel</button>
-    </form>
+    <RocketForm 
+      v-model="form" 
+      :is-editing="!!editingId" 
+      @submit="handleSubmit" 
+      @cancel="resetForm" 
+    />
 
-    <div class="catalog">
-      <h3>Rocket Catalog</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Capacity</th>
-            <th>Range</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="rocket in rockets" :key="rocket.id">
-            <td>{{ rocket.name }}</td>
-            <td>{{ rocket.capacity }}</td>
-            <td>{{ rocket.range }}</td>
-            <td>{{ rocket.decommissioned ? 'Decommissioned' : 'Operational' }}</td>
-            <td>
-              <button @click="editRocket(rocket)" :disabled="rocket.decommissioned">Edit</button>
-              <button @click="handleDecommission(rocket.id)" :disabled="rocket.decommissioned">Decommission</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <RocketCatalog 
+      :rockets="rockets" 
+      @edit="editRocket" 
+      @decommission="handleDecommission" 
+    />
   </div>
 </template>
 
@@ -59,32 +23,29 @@
 import { ref, onMounted } from 'vue';
 import { getAllRockets, createRocket, updateRocket, decommissionRocket } from '../services/rocketService';
 import { notify } from '../services/notificationService';
+import { useErrorHandler } from '../composables/useErrorHandler';
+import { INITIAL_ROCKET_FORM } from '../constants';
+import RocketForm from './RocketForm.vue';
+import RocketCatalog from './RocketCatalog.vue';
 
 const rockets = ref([]);
-const form = ref({
-  name: '',
-  capacity: 1,
-  range: 'Earth'
-});
+const form = ref({ ...INITIAL_ROCKET_FORM });
 const editingId = ref(null);
-const error = ref(null);
+const { error, handleError, clearError } = useErrorHandler();
 
 const fetchRockets = async () => {
   try {
     rockets.value = await getAllRockets();
-  } catch (e) {
-    error.value = 'Failed to load rockets';
+    clearError();
+  } catch (error) {
+    handleError('Failed to load rockets', error);
   }
 };
 
 const resetForm = () => {
   editingId.value = null;
-  form.value = {
-    name: '',
-    capacity: 1,
-    range: 'Earth'
-  };
-  error.value = null;
+  form.value = { ...INITIAL_ROCKET_FORM };
+  clearError();
 };
 
 const handleSubmit = async () => {
@@ -98,9 +59,8 @@ const handleSubmit = async () => {
     }
     await fetchRockets();
     resetForm();
-  } catch (e) {
-    error.value = 'Failed to save rocket';
-    notify('Failed to save rocket', 'error');
+  } catch (error) {
+    handleError('Failed to save rocket', error);
   }
 };
 
@@ -109,9 +69,8 @@ const handleDecommission = async (id) => {
     await decommissionRocket(id);
     notify('Rocket decommissioned successfully');
     await fetchRockets();
-  } catch (e) {
-    error.value = 'Failed to decommission rocket';
-    notify('Failed to decommission rocket', 'error');
+  } catch (error) {
+    handleError('Failed to decommission rocket', error);
   }
 };
 
@@ -122,6 +81,7 @@ const editRocket = (rocket) => {
     capacity: rocket.capacity,
     range: rocket.range
   };
+  clearError();
 };
 
 onMounted(fetchRockets);
@@ -135,21 +95,6 @@ onMounted(fetchRockets);
 }
 .error {
   color: red;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-form {
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  padding: 15px;
-}
-form div {
   margin-bottom: 10px;
 }
 </style>

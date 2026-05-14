@@ -1,5 +1,6 @@
 package academy.aicode.astrobookings.controller;
 
+import academy.aicode.astrobookings.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,12 +23,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
+        LOGGER.error("Resource not found: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
-        if (e.getMessage().contains("not found")) {
-            LOGGER.error("Resource not found: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
         LOGGER.error("Internal server error: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }

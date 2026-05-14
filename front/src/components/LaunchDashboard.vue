@@ -15,7 +15,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="launch in launches" :key="launch.id">
+        <tr v-for="launch in processedLaunches" :key="launch.id">
           <td>{{ launch.rocketId }}</td>
           <td>{{ launch.launchDate }}</td>
           <td>{{ launch.price }}</td>
@@ -23,20 +23,20 @@
           <td>{{ launch.status }}</td>
           <td>
             <button 
-              v-if="launch.status === 'Created'" 
-              @click="handleUpdateStatus(launch.id, 'Confirmed')"
+              v-if="launch.canConfirm" 
+              @click="handleUpdateStatus(launch.id, 'CONFIRMED')"
             >
               Confirm
             </button>
             <button 
-              v-if="launch.status === 'Confirmed'" 
+              v-if="launch.canComplete" 
               @click="handleUpdateStatus(launch.id, 'Completed')"
             >
               Complete
             </button>
             <button 
-              v-if="launch.status !== 'Cancelled' && launch.status !== 'Completed'" 
-              @click="handleUpdateStatus(launch.id, 'Cancelled')"
+              v-if="launch.canCancel" 
+              @click="handleUpdateStatus(launch.id, 'CANCELLED')"
             >
               Cancel
             </button>
@@ -48,18 +48,29 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineExpose } from 'vue';
+import { ref, computed, onMounted, defineExpose } from 'vue';
 import { getAllLaunches, updateLaunchStatus } from '../services/launchService';
 import { notify } from '../services/notificationService';
+import { useErrorHandler } from '../composables/useErrorHandler';
 
 const launches = ref([]);
-const error = ref(null);
+const { error, handleError, clearError } = useErrorHandler();
+
+const processedLaunches = computed(() => {
+  return launches.value.map(launch => ({
+    ...launch,
+    canConfirm: launch.status === 'CREATED',
+    canComplete: launch.status === 'CONFIRMED',
+    canCancel: launch.status !== 'CANCELLED' && launch.status !== 'Completed'
+  }));
+});
 
 const fetchLaunches = async () => {
   try {
     launches.value = await getAllLaunches();
-  } catch (e) {
-    error.value = 'Failed to load launches';
+    clearError();
+  } catch (error) {
+    handleError('Failed to load launches', error);
   }
 };
 
@@ -68,9 +79,8 @@ const handleUpdateStatus = async (id, status) => {
     await updateLaunchStatus(id, status);
     notify(`Launch status updated to ${status}`);
     await fetchLaunches();
-  } catch (e) {
-    error.value = `Failed to update status to ${status}`;
-    notify(`Failed to update status to ${status}`, 'error');
+  } catch (error) {
+    handleError(`Failed to update status to ${status}`, error);
   }
 };
 

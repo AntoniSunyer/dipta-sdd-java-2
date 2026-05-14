@@ -12,12 +12,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { getHealthStatus } from '../services/healthService';
+import { useErrorHandler } from '../composables/useErrorHandler';
 
 const health = ref({
   status: 'UNKNOWN',
   uptime: 'N/A'
 });
 const loading = ref(true);
+const { handleError } = useErrorHandler();
 
 const statusClass = computed(() => ({
   'status-up': health.value.status === 'UP',
@@ -28,7 +30,8 @@ const statusClass = computed(() => ({
 onMounted(async () => {
   try {
     health.value = await getHealthStatus();
-  } catch (e) {
+  } catch (error) {
+    handleError('Failed to check backend status', error);
     health.value = { status: 'DOWN', uptime: 'N/A' };
   } finally {
     loading.value = false;

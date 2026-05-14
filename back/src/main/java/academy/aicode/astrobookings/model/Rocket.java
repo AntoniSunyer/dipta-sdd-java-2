@@ -3,7 +3,7 @@ package academy.aicode.astrobookings.model;
 import jakarta.validation.constraints.*;
 import java.util.UUID;
 
-public class Rocket {
+public class Rocket implements Identifiable {
     private UUID id;
 
     @NotBlank(message = "Name is required")

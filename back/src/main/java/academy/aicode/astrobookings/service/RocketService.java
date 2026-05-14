@@ -1,5 +1,6 @@
 package academy.aicode.astrobookings.service;
 
+import academy.aicode.astrobookings.exception.ResourceNotFoundException;
 import academy.aicode.astrobookings.model.Rocket;
 import academy.aicode.astrobookings.repository.RocketRepository;
 import org.slf4j.Logger;
@@ -29,7 +30,6 @@ public class RocketService {
     }
 
     public Rocket createRocket(Rocket rocket) {
-        validateRocket(rocket);
         rocket.setId(null); // Ensure it's a new rocket
         rocket.setDecommissioned(false);
         Rocket savedRocket = repository.save(rocket);
@@ -39,14 +39,16 @@ public class RocketService {
 
     public Rocket updateRocket(UUID id, Rocket rocketDetails) {
         Rocket rocket = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rocket not found with id: " + id));
-        
-        validateRocket(rocketDetails);
-        
+                .orElseThrow(() -> new ResourceNotFoundException("Rocket not found with id: " + id));
+
+        if (Boolean.TRUE.equals(rocket.isDecommissioned())) {
+            throw new IllegalStateException("Cannot update a decommissioned rocket");
+        }
+
         rocket.setName(rocketDetails.getName());
         rocket.setCapacity(rocketDetails.getCapacity());
         rocket.setRange(rocketDetails.getRange());
-        
+
         Rocket updatedRocket = repository.save(rocket);
         LOGGER.info("Rocket updated: {}", updatedRocket.getId());
         return updatedRocket;
@@ -54,21 +56,10 @@ public class RocketService {
 
     public void decommissionRocket(UUID id) {
         Rocket rocket = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rocket not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Rocket not found with id: " + id));
         rocket.setDecommissioned(true);
         repository.save(rocket);
         LOGGER.info("Rocket decommissioned: {}", id);
     }
 
-    private void validateRocket(Rocket rocket) {
-        if (rocket.getCapacity() < 1 || rocket.getCapacity() > 9) {
-            throw new IllegalArgumentException("Capacity must be between 1 and 9");
-        }
-        if (rocket.getName() == null || rocket.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Name is required");
-        }
-        if (rocket.getRange() == null) {
-            throw new IllegalArgumentException("Range is required");
-        }
-    }
 }

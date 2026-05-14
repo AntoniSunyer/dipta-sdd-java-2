@@ -33,27 +33,25 @@ import { ref, onMounted, defineEmits } from 'vue';
 import { getAllRockets } from '../services/rocketService';
 import { createLaunch } from '../services/launchService';
 import { notify } from '../services/notificationService';
+import { useErrorHandler } from '../composables/useErrorHandler';
+import { INITIAL_LAUNCH_FORM } from '../constants';
 
 const emit = defineEmits(['launch-created']);
 
 const rockets = ref([]);
-const form = ref({
-  rocketId: '',
-  launchDate: '',
-  price: 0,
-  minOccupancy: 1
-});
-const error = ref(null);
+const form = ref({ ...INITIAL_LAUNCH_FORM });
+const { error, handleError, clearError } = useErrorHandler();
 
 const fetchRockets = async () => {
   try {
     const allRockets = await getAllRockets();
     rockets.value = allRockets.filter(r => !r.decommissioned);
-    if (rockets.value.length > 0) {
+    if (rockets.value.length > 0 && !form.value.rocketId) {
       form.value.rocketId = rockets.value[0].id;
     }
-  } catch (e) {
-    error.value = 'Failed to load rockets';
+    clearError();
+  } catch (error) {
+    handleError('Failed to load rockets', error);
   }
 };
 
@@ -63,20 +61,17 @@ const handleSubmit = async () => {
     notify('Launch scheduled successfully!');
     emit('launch-created');
     resetForm();
-  } catch (e) {
-    error.value = 'Failed to schedule launch';
-    notify('Failed to schedule launch', 'error');
+  } catch (error) {
+    handleError('Failed to schedule launch', error);
   }
 };
 
 const resetForm = () => {
   form.value = {
-    rocketId: rockets.value.length > 0 ? rockets.value[0].id : '',
-    launchDate: '',
-    price: 0,
-    minOccupancy: 1
+    ...INITIAL_LAUNCH_FORM,
+    rocketId: rockets.value.length > 0 ? rockets.value[0].id : ''
   };
-  error.value = null;
+  clearError();
 };
 
 onMounted(fetchRockets);

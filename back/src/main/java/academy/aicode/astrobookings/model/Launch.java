@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class Launch {
+public class Launch implements Identifiable {
     private UUID id;
 
     @NotNull(message = "Rocket ID is required")

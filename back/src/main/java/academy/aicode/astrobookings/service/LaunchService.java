@@ -1,5 +1,6 @@
 package academy.aicode.astrobookings.service;
 
+import academy.aicode.astrobookings.exception.ResourceNotFoundException;
 import academy.aicode.astrobookings.model.Launch;
 import academy.aicode.astrobookings.model.LaunchStatus;
 import academy.aicode.astrobookings.repository.LaunchRepository;
@@ -23,13 +24,11 @@ public class LaunchService {
     }
 
     public Launch createLaunch(Launch launch) {
-        validateLaunch(launch);
-        
         rocketService.getRocketById(launch.getRocketId())
                 .orElseThrow(() -> new IllegalArgumentException("Rocket not found with id: " + launch.getRocketId()));
-        
+
         launch.setId(null);
-        launch.setStatus(LaunchStatus.Created);
+        launch.setStatus(LaunchStatus.CREATED);
         Launch savedLaunch = repository.save(launch);
         LOGGER.info("Launch created: {} for rocket {} on {}", savedLaunch.getId(), savedLaunch.getRocketId(), savedLaunch.getLaunchDate());
         return savedLaunch;
@@ -41,7 +40,7 @@ public class LaunchService {
 
     public Launch getLaunchById(UUID id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Launch not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Launch not found with id: " + id));
     }
 
     public Launch updateLaunchStatus(UUID id, LaunchStatus status) {
@@ -53,18 +52,4 @@ public class LaunchService {
         return updatedLaunch;
     }
 
-    private void validateLaunch(Launch launch) {
-        if (launch.getRocketId() == null) {
-            throw new IllegalArgumentException("Rocket ID is required");
-        }
-        if (launch.getLaunchDate() == null) {
-            throw new IllegalArgumentException("Launch date is required");
-        }
-        if (launch.getPrice() == null || launch.getPrice().doubleValue() < 0) {
-            throw new IllegalArgumentException("Price must be at least 0");
-        }
-        if (launch.getMinOccupancy() == null || launch.getMinOccupancy() < 1) {
-            throw new IllegalArgumentException("Minimum occupancy must be at least 1");
-        }
-    }
 }

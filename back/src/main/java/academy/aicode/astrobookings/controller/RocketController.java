@@ -12,7 +12,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/rockets")
-@CrossOrigin(origins = "*")
 public class RocketController {
     private final RocketService service;
 

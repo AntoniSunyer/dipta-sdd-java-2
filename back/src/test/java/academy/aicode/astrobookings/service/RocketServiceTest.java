@@ -25,7 +25,7 @@ class RocketServiceTest {
 
     @Test
     void shouldCreateRocket() {
-        Rocket rocket = new Rocket(null, "Falcon 9", 5, RocketRange.Earth, false);
+        Rocket rocket = new Rocket(null, "Falcon 9", 5, RocketRange.EARTH, false);
         Rocket created = service.createRocket(rocket);
 
         assertNotNull(created.getId());
@@ -33,28 +33,33 @@ class RocketServiceTest {
         assertFalse(created.isDecommissioned());
     }
 
-    @Test
-    void shouldThrowExceptionWhenCapacityIsInvalid() {
-        Rocket rocket = new Rocket(null, "Big Rocket", 10, RocketRange.Mars, false);
-        assertThrows(IllegalArgumentException.class, () -> service.createRocket(rocket));
-    }
 
     @Test
     void shouldUpdateRocket() {
-        Rocket rocket = new Rocket(null, "Falcon 9", 5, RocketRange.Earth, false);
+        Rocket rocket = new Rocket(null, "Falcon 9", 5, RocketRange.EARTH, false);
         Rocket created = service.createRocket(rocket);
 
-        Rocket details = new Rocket(null, "Falcon Heavy", 9, RocketRange.Mars, false);
+        Rocket details = new Rocket(null, "Falcon Heavy", 9, RocketRange.MARS, false);
         Rocket updated = service.updateRocket(created.getId(), details);
 
         assertEquals("Falcon Heavy", updated.getName());
         assertEquals(9, updated.getCapacity());
-        assertEquals(RocketRange.Mars, updated.getRange());
+        assertEquals(RocketRange.MARS, updated.getRange());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingDecommissionedRocket() {
+        Rocket rocket = new Rocket(null, "Falcon 9", 5, RocketRange.EARTH, false);
+        Rocket created = service.createRocket(rocket);
+        service.decommissionRocket(created.getId());
+
+        Rocket details = new Rocket(null, "Falcon Heavy", 9, RocketRange.MARS, false);
+        assertThrows(IllegalStateException.class, () -> service.updateRocket(created.getId(), details));
     }
 
     @Test
     void shouldDecommissionRocket() {
-        Rocket rocket = new Rocket(null, "Falcon 9", 5, RocketRange.Earth, false);
+        Rocket rocket = new Rocket(null, "Falcon 9", 5, RocketRange.EARTH, false);
         Rocket created = service.createRocket(rocket);
 
         service.decommissionRocket(created.getId());
@@ -65,8 +70,8 @@ class RocketServiceTest {
 
     @Test
     void shouldGetAllRockets() {
-        service.createRocket(new Rocket(null, "R1", 1, RocketRange.Earth, false));
-        service.createRocket(new Rocket(null, "R2", 2, RocketRange.Moon, false));
+        service.createRocket(new Rocket(null, "R1", 1, RocketRange.EARTH, false));
+        service.createRocket(new Rocket(null, "R2", 2, RocketRange.MOON, false));
 
         List<Rocket> all = service.getAllRockets();
         assertEquals(2, all.size());

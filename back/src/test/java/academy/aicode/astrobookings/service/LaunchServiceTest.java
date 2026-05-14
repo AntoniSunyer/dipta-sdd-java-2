@@ -30,7 +30,7 @@ class LaunchServiceTest {
         rocketService = new RocketService(rocketRepository);
         service = new LaunchService(repository, rocketService);
         
-        testRocket = rocketService.createRocket(new Rocket(null, "Falcon 9", 5, RocketRange.Earth, false));
+        testRocket = rocketService.createRocket(new Rocket(null, "Falcon 9", 5, RocketRange.EARTH, false));
     }
 
     @Test
@@ -39,7 +39,7 @@ class LaunchServiceTest {
         Launch created = service.createLaunch(launch);
 
         assertNotNull(created.getId());
-        assertEquals(LaunchStatus.Created, created.getStatus());
+        assertEquals(LaunchStatus.CREATED, created.getStatus());
         assertEquals(testRocket.getId(), created.getRocketId());
     }
 
@@ -54,9 +54,9 @@ class LaunchServiceTest {
         Launch launch = new Launch(null, testRocket.getId(), LocalDate.now(), new BigDecimal("1000"), 2, null);
         Launch created = service.createLaunch(launch);
 
-        service.updateLaunchStatus(created.getId(), LaunchStatus.Confirmed);
+        service.updateLaunchStatus(created.getId(), LaunchStatus.CONFIRMED);
         Launch updated = service.getLaunchById(created.getId());
 
-        assertEquals(LaunchStatus.Confirmed, updated.getStatus());
+        assertEquals(LaunchStatus.CONFIRMED, updated.getStatus());
     }
 }

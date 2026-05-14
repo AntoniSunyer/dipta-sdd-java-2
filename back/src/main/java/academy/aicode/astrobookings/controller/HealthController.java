@@ -1,15 +1,14 @@
 package academy.aicode.astrobookings.controller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.management.ManagementFactory;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "*")
 public class HealthController {
 
     @GetMapping("/health")
@@ -21,12 +20,11 @@ public class HealthController {
     }
 
     private String formatUptime(long uptimeMs) {
-        long seconds = uptimeMs / 1000;
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        long days = hours / 24;
-
+        Duration duration = Duration.ofMillis(uptimeMs);
         return String.format("%d days, %d hours, %d minutes, %d seconds",
-                days, hours % 24, minutes % 60, seconds % 60);
+                duration.toDays(),
+                duration.toHoursPart(),
+                duration.toMinutesPart(),
+                duration.toSecondsPart());
     }
 }
